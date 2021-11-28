@@ -23,9 +23,7 @@ namespace AccessManagerApp
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddDbContext<DbContextAccessManager>(options =>
-            options.UseSqlServer(Configuration["Manager:ConnectionString"]));
+        {           
           
             services.AddRazorPages();
         }
