@@ -1,11 +1,6 @@
+using AccessManagerApp.Helpers;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AccessManagerApp
 {
@@ -13,7 +8,8 @@ namespace AccessManagerApp
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            Encrypter.EncryptPassword("123354435", out byte[] salt, out string hashed);
+            CreateHostBuilder(args).Build().Run();          
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -21,6 +17,6 @@ namespace AccessManagerApp
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                });        
     }
 }

@@ -1,4 +1,5 @@
 using AccessManagerApp.Data;
+using AccessManagerApp.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -17,15 +18,19 @@ namespace AccessManagerApp
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Encrypter.ConfigurationEncrypt(Configuration);
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {           
-          
+        {
+            services.AddDbContext<DbContextAccessManager>(options =>
+                options.UseSqlServer(Configuration["Manager:ConnectionString"]));
+
             services.AddRazorPages();
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

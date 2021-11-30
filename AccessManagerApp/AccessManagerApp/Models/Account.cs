@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AccessManagerApp.Models
 {
-    public class Account
+    public abstract class Account
     {
         public int IdAccount { get; set; }
         public int IdAccountType { get; set; }
@@ -12,9 +13,7 @@ namespace AccessManagerApp.Models
         public DateTime CreationDate { get; set; }
 
         public AccountType AccountType { get; set; }
-        public AccNormal AccNormal { get; set; }
-        public AccWebSite AccWebSite { get; set; }
-        public AccEmailAssociated AccEmailAssociated { get; set; }
-        public AccCard AccCard { get; set; }
+        public List<AccountDetails> AccountDetails { get; set; }
+
     }
 }

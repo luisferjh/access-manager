@@ -1,7 +1,9 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AccessManagerApp.Models
 {
+    [Table("AccCard")]
     public class AccCard : Account
     {
         public string CardType { get; set; }
@@ -9,7 +11,6 @@ namespace AccessManagerApp.Models
         public string Bank { get; set; }
         public string CCV { get; set; }
         public DateTime ExpirationDate { get; set; }
-
-        public Account Account { get; set; }
+       
     }
 }
