@@ -7,6 +7,7 @@ namespace AccessManagerApp.Models
     {
         public int IdAccount { get; set; }
         public int IdAccountType { get; set; }
+        public Guid GuidAccount { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public bool State { get; set; }

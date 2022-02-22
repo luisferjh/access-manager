@@ -1,5 +1,7 @@
 using AccessManagerApp.Data;
 using AccessManagerApp.Helpers;
+using AccessManagerApp.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -26,11 +28,16 @@ namespace AccessManagerApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
             services.AddDbContext<DbContextAccessManager>(options =>
                 options.UseSqlServer(Configuration["Manager:ConnectionString"]));
 
-            services.AddRazorPages();
-           
+            services.AddAutoMapper(typeof(Startup));
+
+            services.AddTransient<AccountTypeService>();
+
+          
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,7 +60,7 @@ namespace AccessManagerApp
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
     }

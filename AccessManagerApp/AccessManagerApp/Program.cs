@@ -7,8 +7,7 @@ namespace AccessManagerApp
     public class Program
     {
         public static void Main(string[] args)
-        {
-            Encrypter.EncryptPassword("123354435", out byte[] salt, out string hashed);
+        {          
             CreateHostBuilder(args).Build().Run();          
         }
 

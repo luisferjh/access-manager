@@ -7,8 +7,9 @@ namespace AccessManagerApp.Data
     { 
         public DbSet<Account> Accounts { get; set; }
         public DbSet<AccountType> AccountTypes { get; set; }
+        public DbSet<AccountDetails> AccountDetails { get; set; }
 
-       
+
         public DbContextAccessManager(DbContextOptions<DbContextAccessManager> options)
         : base(options)
         {
@@ -24,7 +25,12 @@ namespace AccessManagerApp.Data
 
                 entity.HasOne(e => e.AccountType)
                     .WithMany(p => p.Account)
-                    .HasForeignKey(e => e.IdAccountType);
+                    .HasForeignKey(e => e.IdAccountType)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.Property(s => s.GuidAccount)
+                .HasColumnType("UNIQUEIDENTIFIER")
+                .IsRequired();
 
                 entity.Property(s => s.Name)                    
                     .HasColumnType("nchar(50)")
@@ -40,7 +46,14 @@ namespace AccessManagerApp.Data
                   .HasColumnType("datetime");
             });
 
-   
+            modelBuilder.Entity<AccountDetails>(entity => {
+                entity.HasKey(e => e.IdAccountDetail);
+
+                entity.HasOne(f => f.Account)
+                    .WithMany(p => p.AccountDetails)
+                    .HasForeignKey(f => f.IdAccount);
+            });
+            
             modelBuilder.Entity<AccountType>(entity =>
             {
                 entity.HasKey(e => e.IdAccountType);
