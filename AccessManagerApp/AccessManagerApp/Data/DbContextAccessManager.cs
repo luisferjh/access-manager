@@ -111,18 +111,11 @@ namespace AccessManagerApp.Data
                     .IsRequired();
 
                 entity.Property(p => p.CCV)
-                    .HasColumnType("nchar(50)")
-                    .IsRequired();
+                    .HasColumnType("nchar(50)");
 
                 entity.Property(p => p.ExpirationDate)
-                    .HasColumnType("nchar(50)")
-                    .IsRequired();
+                    .HasColumnType("nchar(50)");                    
             });
-
-            //modelBuilder.Entity<AccNormal>().ToTable("AccNormal");
-            //modelBuilder.Entity<AccWebSite>().ToTable("AccWebSite");
-            //modelBuilder.Entity<AccEmailAssociated>().ToTable("AccEmailAssociated");
-            //modelBuilder.Entity<AccCard>().ToTable("AccCard");
         }
     }
 }
