@@ -9,8 +9,8 @@ namespace AccessManagerApp.Services
 {
     public abstract class CreateAccountFactory
     {
-        protected abstract Account MakeAccount();
-        public Account CreateAccount() 
+        protected abstract AccountDTO MakeAccount();
+        public AccountDTO CreateAccount() 
         {
             return MakeAccount();
         }
@@ -22,16 +22,14 @@ namespace AccessManagerApp.Services
         public AccountNormalFactory(AccountPOSTDTO model)
         {
             _modelDto = model;
-            _modelDto.AccountTypeObj = JsonSerializer.Deserialize<AccountNormalDTO>(_modelDto.AccountTypeObj.ToString());
-            _modelDto.GuidAccount = Guid.NewGuid();              
+            _modelDto.AccountTypeObj = JsonSerializer.Deserialize<AccountNormalDTO>(_modelDto.AccountTypeObj.ToString());                       
         }
 
-        protected override Account MakeAccount()
+        protected override AccountDTO MakeAccount()
         {
             IMapper _mapper = StaticServiceProvider.GetService<IMapper>();
-            AccountDTO accDto = _modelDto.MappingAccount<AccountNormalDTO>();             
-            Account account = _mapper.Map<AccNormal>(accDto);
-            return account;
+            AccountDTO accDto = _modelDto.MappingAccount<AccountNormalDTO>();                       
+            return accDto;
         }
     }
 
@@ -41,15 +39,13 @@ namespace AccessManagerApp.Services
         public AccountEmailFactory(AccountPOSTDTO model)
         {
             _modelDto = model;
-            _modelDto.AccountTypeObj = JsonSerializer.Deserialize<AccountEmailDTO>(_modelDto.AccountTypeObj.ToString());
-            _modelDto.GuidAccount = Guid.NewGuid();
+            _modelDto.AccountTypeObj = JsonSerializer.Deserialize<AccountEmailDTO>(_modelDto.AccountTypeObj.ToString());            
         }
-        protected override Account MakeAccount()
+        protected override AccountDTO MakeAccount()
         {
             IMapper _mapper = StaticServiceProvider.GetService<IMapper>();
-            AccountDTO accDto = _modelDto.MappingAccount<AccountEmailDTO>();
-            Account account = _mapper.Map<AccEmailAssociated>(accDto);
-            return account;
+            AccountDTO accDto = _modelDto.MappingAccount<AccountEmailDTO>();           
+            return accDto;
         }
     }
 
@@ -59,15 +55,13 @@ namespace AccessManagerApp.Services
         public AccountWebSiteFactory(AccountPOSTDTO model)
         {
             _modelDto = model;
-            _modelDto.AccountTypeObj = JsonSerializer.Deserialize<AccountWebAssociatedDTO>(_modelDto.AccountTypeObj.ToString());
-            _modelDto.GuidAccount = Guid.NewGuid();
+            _modelDto.AccountTypeObj = JsonSerializer.Deserialize<AccountWebAssociatedDTO>(_modelDto.AccountTypeObj.ToString());           
         }
-        protected override Account MakeAccount()
+        protected override AccountDTO MakeAccount()
         {
             IMapper _mapper = StaticServiceProvider.GetService<IMapper>();
-            AccountDTO accDto = _modelDto.MappingAccount<AccountWebAssociatedDTO>();
-            Account account = _mapper.Map<AccWebSite>(accDto);
-            return account;
+            AccountDTO accDto = _modelDto.MappingAccount<AccountWebAssociatedDTO>();            
+            return accDto;
         }
     }
 
@@ -77,23 +71,21 @@ namespace AccessManagerApp.Services
         public AccountCardFactory(AccountPOSTDTO model)
         {
             _modelDto = model;
-            _modelDto.AccountTypeObj = JsonSerializer.Deserialize<AccountCardDTO>(_modelDto.AccountTypeObj.ToString());
-            _modelDto.GuidAccount = Guid.NewGuid();     
+            _modelDto.AccountTypeObj = JsonSerializer.Deserialize<AccountCardDTO>(_modelDto.AccountTypeObj.ToString());            
         }
-        protected override Account MakeAccount()
+        protected override AccountDTO MakeAccount()
         {
             IMapper _mapper = StaticServiceProvider.GetService<IMapper>();
-            AccountDTO accDto = _modelDto.MappingAccount<AccountCardDTO>();
-            Account account = _mapper.Map<AccCard>(accDto);
-            return account;
+            AccountDTO accDto = _modelDto.MappingAccount<AccountCardDTO>();           
+            return accDto;
         }
     }
 
     public static class AccountFactory
     {
-        public static Account CreateAccountObject(AccountPOSTDTO accountModelDTO)
+        public static AccountDTO CreateAccountObject(AccountPOSTDTO accountModelDTO)
         {
-            Account _account = accountModelDTO.CodeAccountType switch
+            AccountDTO _account = accountModelDTO.CodeAccountType switch
             {
                 "001" => new AccountNormalFactory(accountModelDTO).CreateAccount(),
                 "002" => new AccountEmailFactory(accountModelDTO).CreateAccount(),

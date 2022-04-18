@@ -33,11 +33,13 @@ namespace AccessManagerApp.DTOs
         public bool State { get; set; }
         public DateTime CreationDate { get; set; }
         public object AccountTypeObj { get; set; }
-        public List<object> Details { get; set; }
+        public List<AccountDetailDTO> Details { get; set; }
     }
 
     public class AccountDetailDTO 
-    {      
+    {
+        public int IdAccountDetail { get; set; }
+        public int IdAccount { get; set; }
         public string TagName { get; set; }
         public string ValueTag { get; set; }
         public bool IsSensitive { get; set; }

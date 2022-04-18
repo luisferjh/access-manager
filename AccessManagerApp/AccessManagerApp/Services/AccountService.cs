@@ -50,38 +50,66 @@ namespace AccessManagerApp.Services
             }                       
         }
 
-        public async Task<bool> SaveAccount(AccountPOSTDTO model)
+        public async Task<bool> SaveAccountAsync(AccountPOSTDTO model)
         {
             try
             {                            
-                Account result = AccountFactory.CreateAccountObject(model);
+                AccountDTO accountDto = AccountFactory.CreateAccountObject(model);
+                Account account = _mapper.Map<Account>(accountDto);
+                account.GuidAccount = Guid.NewGuid();
                 using (var transaction = _dbContextAccessManager.Database.BeginTransaction())
                 {
-                    _dbContextAccessManager.Accounts.Add(result);
+                    _dbContextAccessManager.Accounts.Add(account);
                     await SaveChangesAsync();
 
                     if (model.Details != null && model.Details.Count > 0)
-                    {
-                        List<AccountDetailDTO> DetailsDto = JsonSerializer.Deserialize<List<AccountDetailDTO>>(model.Details.ToString());
-                        List<AccountDetails> accountDetails = _mapper.Map<List<AccountDetails>>(DetailsDto);
+                    {                    
+                        List<AccountDetails> accountDetails = _mapper.Map<List<AccountDetails>>(model.Details);
                         accountDetails.ForEach(f => {
-                            f.IdAccount = result.IdAccount;                          
+                            f.IdAccount = account.IdAccount;                          
                         });
 
                         _dbContextAccessManager.AccountDetails.AddRange(accountDetails);
                         await SaveChangesAsync();
                     }                                     
                     _dbContextAccessManager.Database.CommitTransaction();
-                }
-               
+                }               
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
                 _dbContextAccessManager.Database.RollbackTransaction();
-                return false;
+                throw;
             }
-
             return true;
+        }
+
+        public async Task<bool> SaveAccountDetailsAsync(List<AccountDetailDTO> model)
+        {           
+            List<AccountDetails> accountDetails = _mapper.Map<List<AccountDetails>>(model);
+            await _dbContextAccessManager.AccountDetails.AddRangeAsync(accountDetails);            
+            bool result = await SaveChangesAsync();
+            return result;
+        }
+
+        public async Task<bool> UpdateAccountAsync(AccountPOSTDTO model)
+        {           
+            AccountDTO accountDto = AccountFactory.CreateAccountObject(model);        
+            Account account = await _dbContextAccessManager.Accounts.FirstOrDefaultAsync(f => f.GuidAccount == accountDto.GuidAccount);
+            if (account == null)
+                return false;
+
+            account = _mapper.Map<Account>(accountDto);              
+            bool result = await SaveChangesAsync();                                             
+            return result;
+        }
+
+
+        public async Task<bool> UpdateAccountDetailAsync(AccountDetailDTO model) 
+        {
+            AccountDetails accountDetail = await _dbContextAccessManager.AccountDetails.FirstOrDefaultAsync(f => f.IdAccountDetail == model.IdAccountDetail);
+            accountDetail = _mapper.Map<AccountDetails>(accountDetail);
+            bool result = await SaveChangesAsync();
+            return result;
         }
 
         public async Task<bool> SaveChangesAsync()         

@@ -28,11 +28,13 @@ namespace AccessManagerApp.Helpers
               .ForMember(dest => dest.Password, opt => opt.MapFrom(src => Encrypter.DecryptString(src.Password)));
 
             CreateMap<AccountDetailDTO, AccountDetails>()
+                //.ForMember(dest => dest.IdAccount, opt => opt.MapFrom(src => Convert.ToInt32(src.IdAccount)))
                 .ForMember(dest => dest.ValueTag, opt => opt.MapFrom(src => src.IsSensitive ? 
                     Encrypter.EncryptPlainText(src.ValueTag) 
                     : src.ValueTag));
 
             CreateMap<AccountDetails, AccountDetailDTO>()
+                //.ForMember(dest => dest.IdAccount, opt => opt.MapFrom(src => Convert.ToString(src.IdAccount)))
                 .ForMember(dest => dest.ValueTag, opt => opt.MapFrom(src => src.IsSensitive ? 
                     Encrypter.DecryptString(src.ValueTag)
                     :src.ValueTag));

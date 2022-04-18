@@ -4,6 +4,8 @@ using AccessManagerApp.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AccessManagerApp.Controllers
@@ -50,15 +52,113 @@ namespace AccessManagerApp.Controllers
         public async Task<ActionResult> Post([FromBody] AccountPOSTDTO model)
         {
             if (!ModelState.IsValid)            
-                return BadRequest(ModelState);            
+                return BadRequest(ModelState);
 
-            bool result = await _accountService.SaveAccount(model);
-            if (!result)           
-                return BadRequest();            
-                           
-            //return CreatedAtAction("List", model);
+            try
+            {
+                bool result = await _accountService.SaveAccountAsync(model);
+                if (!result)
+                    return BadRequest();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return BadRequest();
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest();
+            }           
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+                                                        
             return Ok();
         }
+
+
+        [HttpPut("[action]")]
+        public async Task<ActionResult> Update([FromBody] AccountPOSTDTO model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                bool result = await _accountService.UpdateAccountAsync(model);
+                if (!result)
+                    return BadRequest();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return BadRequest();
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }           
+            return Ok();
+        }
+
+        [HttpPut("[action]")]
+        public async Task<ActionResult> SaveDetail([FromBody] List<AccountDetailDTO> model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                bool result = await _accountService.SaveAccountDetailsAsync(model);
+                if (!result)
+                    return BadRequest();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return BadRequest();
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+            return Ok();
+        }
+
+
+        [HttpPut("[action]")]
+        public async Task<ActionResult> UpdateDetail([FromBody] AccountDetailDTO model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                bool result = await _accountService.UpdateAccountDetailAsync(model);
+                if (!result)
+                    return BadRequest();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return BadRequest();
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+            return Ok();
+        }
+
 
     }
 }
