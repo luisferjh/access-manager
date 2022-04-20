@@ -6,6 +6,7 @@ namespace AccessManagerApp.Models
     public abstract class Account
     {
         public int IdAccount { get; set; }
+        public int IdUser { get; set; }
         public int IdAccountType { get; set; }
         public Guid GuidAccount { get; set; }
         public string Name { get; set; }
@@ -15,6 +16,7 @@ namespace AccessManagerApp.Models
 
         public AccountType AccountType { get; set; }
         public List<AccountDetails> AccountDetails { get; set; }
+        public User User { get; set; }
 
     }
 }

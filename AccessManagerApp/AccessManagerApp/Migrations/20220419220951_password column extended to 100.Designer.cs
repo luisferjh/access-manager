@@ -4,14 +4,16 @@ using AccessManagerApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AccessManagerApp.Migrations
 {
     [DbContext(typeof(DbContextAccessManager))]
-    partial class DbContextAccessManagerModelSnapshot : ModelSnapshot
+    [Migration("20220419220951_password column extended to 100")]
+    partial class passwordcolumnextendedto100
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,7 +40,7 @@ namespace AccessManagerApp.Migrations
                     b.Property<int>("IdAccountType")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdUser")
+                    b.Property<int?>("IdUser")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -214,8 +216,7 @@ namespace AccessManagerApp.Migrations
                     b.HasOne("AccessManagerApp.Models.User", "User")
                         .WithMany("Accounts")
                         .HasForeignKey("IdUser")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("AccountType");
 

@@ -8,7 +8,7 @@ namespace AccessManagerApp.Data
         public DbSet<Account> Accounts { get; set; }
         public DbSet<AccountType> AccountTypes { get; set; }
         public DbSet<AccountDetails> AccountDetails { get; set; }
-
+        public DbSet<User> Users { get; set; }
 
         public DbContextAccessManager(DbContextOptions<DbContextAccessManager> options)
         : base(options)
@@ -22,6 +22,11 @@ namespace AccessManagerApp.Data
             modelBuilder.Entity<Account>(entity =>
             {
                 entity.HasKey(e => e.IdAccount);
+              
+                entity.HasOne(e => e.User)
+                    .WithMany(p => p.Accounts)
+                    .HasForeignKey(e => e.IdUser)                    
+                     .OnDelete(DeleteBehavior.Cascade);                     ;           
 
                 entity.HasOne(e => e.AccountType)
                     .WithMany(p => p.Account)
@@ -48,7 +53,6 @@ namespace AccessManagerApp.Data
 
             modelBuilder.Entity<AccountDetails>(entity => {
                 entity.HasKey(e => e.IdAccountDetail);
-
                 entity.HasOne(f => f.Account)
                     .WithMany(p => p.AccountDetails)
                     .HasForeignKey(f => f.IdAccount);
@@ -115,6 +119,27 @@ namespace AccessManagerApp.Data
 
                 entity.Property(p => p.ExpirationDate)
                     .HasColumnType("nchar(50)");                    
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.Property(p => p.Username)
+                   .HasColumnType("nchar(15)")
+                   .IsRequired();
+
+                entity.Property(p => p.Password)
+                    .HasColumnType("nchar(100)")
+                    .IsRequired();
+
+                entity.Property(p => p.Email)
+                    .HasColumnType("nchar(40)")
+                    .IsRequired();
+
+                entity.Property(p => p.Created)
+                    .HasColumnType("datetime");
+
+                entity.Property(p => p.State)
+                    .HasColumnType("bit");
             });
         }
     }

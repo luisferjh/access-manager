@@ -2,16 +2,19 @@ using AccessManagerApp.Data;
 using AccessManagerApp.Helpers;
 using AccessManagerApp.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AccessManagerApp
@@ -33,10 +36,33 @@ namespace AccessManagerApp
             services.AddDbContext<DbContextAccessManager>(options =>
                 options.UseSqlServer(Configuration["Manager:ConnectionString"]));
 
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(options =>
+                {
+                    options.SaveToken = true;
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["JwtSettings:Issuer"],
+                        ValidAudience = Configuration["JwtSettings:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtSettings:SecretKey"]))
+                    };
+                });
+
             services.AddAutoMapper(typeof(Startup));
 
             services.AddTransient<AccountTypeService>();
             services.AddTransient<AccountService>();
+            services.AddTransient<UserService>();
 
             services.AddSwaggerGen(c =>
             {
@@ -61,6 +87,8 @@ namespace AccessManagerApp
             }
 
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseRouting();
 
