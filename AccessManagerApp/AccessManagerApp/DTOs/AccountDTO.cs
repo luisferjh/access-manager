@@ -8,6 +8,7 @@ namespace AccessManagerApp.DTOs
     public class AccountDTO
     {
         public int IdAccount { get; set; }
+        public int IdUser { get; set; }
         public int IdAccountType { get; set; }
         public string CodeAccountType { get; set; }
 
@@ -23,11 +24,9 @@ namespace AccessManagerApp.DTOs
     public class AccountPOSTDTO
     {
         public int IdAccount { get; set; }
+        public int IdUser { get; set; }
         public int IdAccountType { get; set; }
         public string CodeAccountType { get; set; }
-
-        [JsonConverter(typeof(string))]
-        public Guid GuidAccount { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public bool State { get; set; }

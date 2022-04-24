@@ -27,21 +27,44 @@ namespace AccessManagerApp.Services
             _config = configuration;
         }
 
-        public async Task<JwtTokenSettingsDTO> Authenticate(UserLoginDTO model) 
+        public async Task<AuthenticationResultDTO> LogInUserAsync(UserLoginDTO model) 
         {
-            User user = await _dbContextAccessManager.Users.FirstOrDefaultAsync(f => f.Username == model.Username); 
+            (User user, AuthenticationResultDTO result) = await AuthenticateAsync(model);
 
             if (user == null)
-                return null;
+                return result;
 
-            if (!CheckPassword(user.Password, model.Password))            
-                return null;
+            JwtTokenSettingsDTO token = GenerateToken(user);
 
-            return GenerateToken(model);                        
+            result.JwtToken = token;
+            result.Success = true;
+                
+            return result;                        
 
         }
 
-        public JwtTokenSettingsDTO GenerateToken(UserLoginDTO user)
+        public async Task<(User, AuthenticationResultDTO)> AuthenticateAsync(UserLoginDTO model) 
+        {
+            User user = await _dbContextAccessManager.Users.FirstOrDefaultAsync(f => f.Username == model.Username);
+            AuthenticationResultDTO result = new AuthenticationResultDTO();
+            if (user == null)
+            {
+                result.Success = false;
+                result.Errors.Add("User does not exist");
+                return (null, result);
+            }               
+
+            if (!CheckPassword(user.Password, model.Password))
+            {
+                result.Success = false;
+                result.Errors.Add("Password combination failed");
+                return (null, result);
+            }
+            
+            return (user, result) ;
+        }
+
+        public JwtTokenSettingsDTO GenerateToken(User user)
         {           
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtSettings:SecretKey"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

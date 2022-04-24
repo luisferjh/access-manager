@@ -20,13 +20,13 @@ namespace AccessManagerApp.Controllers
         [HttpPost("[action]")]
         public async Task<ActionResult> Login([FromBody] UserLoginDTO model)
         {
-            JwtTokenSettingsDTO result = null;
+            AuthenticationResultDTO result = null;
             try
             {
                 if (!ModelState.IsValid)                
-                    return BadRequest();
+                    return Unauthorized();
 
-                result = await _userService.Authenticate(model);
+                result = await _userService.LogInUserAsync(model);
 
                 if (result == null)
                     return NotFound();
@@ -34,11 +34,13 @@ namespace AccessManagerApp.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest();
+                return Unauthorized();
             }
 
-            return Ok(result);
+            return Ok(result.JwtToken);
         }
+
+
 
     }
 }
