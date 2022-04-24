@@ -12,8 +12,7 @@ namespace AccessManagerApp.Helpers
 
             accountTypeDetail.IdAccountType = accountDto.IdAccountType;
             accountTypeDetail.IdUser = accountDto.IdUser;           
-            accountTypeDetail.CodeAccountType = accountDto.CodeAccountType;
-            accountTypeDetail.GuidAccount = accountDto.GuidAccount;
+            accountTypeDetail.CodeAccountType = accountDto.CodeAccountType;           
             accountTypeDetail.Name = accountDto.Name;
             accountTypeDetail.Description = accountDto.Description;
             accountTypeDetail.State = accountDto.State;
